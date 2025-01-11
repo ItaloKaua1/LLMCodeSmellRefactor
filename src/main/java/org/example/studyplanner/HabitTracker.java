@@ -25,6 +25,26 @@ public class HabitTracker {
         this.nextId = 1;
     }
 
+    public String viewAllHabitRecords() {
+        StringBuilder response = new StringBuilder();
+        for (Habit habit : habits) {
+            response.append("[ Habit: ")
+                    .append(habit.getName())
+                    .append(". Records: ");
+            List<LocalDateTime> records = tracker.get(habit.getId());
+            for (LocalDateTime record : records) {
+                response.append(formatHabitDate(record)).append(", ");
+            }
+            if (!records.isEmpty()) {
+                // Remove a última vírgula e espaço adicionados
+                response.setLength(response.length() - 2);
+            }
+            response.append(" ]");
+        }
+        return response.toString();
+    }
+
+
     @Override
     public String toString() {
         StringBuilder response = new StringBuilder();

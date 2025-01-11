@@ -192,13 +192,15 @@ public class StudyPlannerController {
     }
 
     private void handleViewTimeline() throws Exception {
-        try{
+        try {
             handleMethodHeader("Timeline view: ");
-            System.out.println(timelineView.habitDateViewAll(habitTracker));
-        }catch (Exception e){
+            // Agora, chamando o método `viewAllHabitRecords` diretamente da classe HabitTracker
+            System.out.println(habitTracker.viewAllHabitRecords());
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
+
 
     public void handlePlannerInput(){
         try{
