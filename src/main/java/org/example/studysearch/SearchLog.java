@@ -33,7 +33,7 @@ public class SearchLog {
         results.addAll(TodoTracker.getInstance().searchInTodos(text));
         results.addAll(StudyTaskManager.getStudyTaskManager().searchInRegistries(text));
 
-        this.addSearchHistory(text); // Agora o método addSearchHistory pertence à classe SearchLog
+        this.addSearchHistory(text);
         this.setNumUsages(this.getNumUsages() + 1); // Atualiza o número de usos
 
         results.add("\nLogged in: " + this.getLogName());
@@ -85,3 +85,4 @@ public class SearchLog {
         this.logName = logName;
     }
 }
+
