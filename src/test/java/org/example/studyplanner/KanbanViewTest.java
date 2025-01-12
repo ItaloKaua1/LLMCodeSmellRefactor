@@ -138,21 +138,39 @@ class KanbanViewTest {
     @DisplayName("Habit View Empty Test")
     @Order(8)
     void habitEmptyView() throws Exception {
-        try{
-            String response = kanbanView.kanbanView();
-            List<String> splitResponse= List.of(response.split(System.lineSeparator()));
-            int count = 0;
-            for(String str : splitResponse){
-                if(str.contains("No material found")){
-                    count++;
-                }
-            }
-            assertEquals(3, count);
-            assertTrue(response.contains("No material found"));
-        } catch (Exception e){
+        try {
+            String response = getKanbanResponse();
+            List<String> splitResponse = splitResponseLines(response);
+            int count = countNoMaterialFound(splitResponse);
+            validateResponse(response, count);
+        } catch (Exception e) {
             fail();
         }
     }
+
+    private String getKanbanResponse() {
+        return kanbanView.kanbanView();
+    }
+
+    private List<String> splitResponseLines(String response) {
+        return List.of(response.split(System.lineSeparator()));
+    }
+
+    private int countNoMaterialFound(List<String> lines) {
+        int count = 0;
+        for (String line : lines) {
+            if (line.contains("No material found")) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private void validateResponse(String response, int count) {
+        assertEquals(3, count);
+        assertTrue(response.contains("No material found"));
+    }
+
 
     void addMaterials(){
         toDoIds.add(todoTracker.addToDo("Test Title 1", "Test Description 1", 2));
