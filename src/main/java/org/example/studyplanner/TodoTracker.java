@@ -28,29 +28,37 @@ public class TodoTracker {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
+
         for (ToDo toDo : toDos) {
-            String todoInfo = toDo.toString();
-            str.append(todoInfo);
-            str.append("\n");
-            Integer id = toDo.getId();
-            List<LocalDateTime> todosDate = this.tracker.get(id);
-            if(todosDate == null){
-                str.append("No tracks found\n");
-            }else{
-                for (LocalDateTime ldt : todosDate) {
-                    String pattern = "yyyy-MM-dd HH:mm:ss";
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-                    String formattedDate = formatter.format(ldt);
-                    str.append(formattedDate);
-                    str.append("\n");
-                }
+            appendToDoDetails(str, toDo);
+        }
+
+        String response = str.toString();
+        return response.isEmpty() ? "No ToDos found" : response;
+    }
+
+    private void appendToDoDetails(StringBuilder str, ToDo toDo) {
+        str.append(toDo.toString()).append("\n");
+        appendTrackingDetails(str, toDo);
+    }
+
+    private void appendTrackingDetails(StringBuilder str, ToDo toDo) {
+        Integer id = toDo.getId();
+        List<LocalDateTime> todosDate = this.tracker.get(id);
+
+        if (todosDate == null) {
+            str.append("No tracks found\n");
+        } else {
+            for (LocalDateTime ldt : todosDate) {
+                str.append(formatDate(ldt)).append("\n");
             }
         }
-        String response = str.toString();
-        if(response.isEmpty()){
-            return "No ToDos found";
-        }
-        return response;
+    }
+
+    private String formatDate(LocalDateTime dateTime) {
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        return formatter.format(dateTime);
     }
 
     public void addToDoExecutionTime(Integer id){
