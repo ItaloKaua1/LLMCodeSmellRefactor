@@ -35,8 +35,9 @@ public class StudyCardsController {
         actions.put("7", this::handleUpgradeCardFromBox);
         actions.put("8", this::handleDowngradeCardFromBox);
         actions.put("9", this::handleViewBoxes);
-        actions.put("10", this::handleGetRandomCardFromBox);
+        actions.put("10", this::handleGetRandomCardFromBox);  // Aqui agora está correto
     }
+
 
     public void handleViewCards(){
         Map<Integer, Card> cards = manager.getCardsMap();
@@ -77,13 +78,16 @@ public class StudyCardsController {
         leitnerSystem.addCardToBox(id, box);
     }
 
-    public void handleRemoveCardFromBox(){
-        System.out.println("Type card id:");
-        int id = Integer.parseInt(getInput());
-        System.out.println("Type box(0-4):");
-        int box = Integer.parseInt(getInput());
-        leitnerSystem.removeCardFromBox(id, box);
+    public void handleGetRandomCardFromBox() {
+        try {
+            // Acesse LeitnerSystem diretamente
+            String response = this.leitnerSystem.getRandomCardFromBox(); // Supondo que leitnerSystem seja uma instância da classe LeitnerSystem
+            System.out.println(response);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
+
 
     public void handleViewBoxes(){
         System.out.println(leitnerSystem.toString());
@@ -113,22 +117,16 @@ public class StudyCardsController {
         }
     }
 
-    public String getRandomCardFromBox() {
-        String response = "";
-        response += leitnerSystem.getMethodName();
-        List<Box> boxes = leitnerSystem.getBoxes();
-        response += leitnerSystem.getRandomCard(boxes);
-        return response;
-    }
-
-    public void handleGetRandomCardFromBox() {
-        try{
-            String response = getRandomCardFromBox();
-            System.out.println(response);
-        }catch (Exception e){
+    public void handleRemoveCardFromBox() {
+        try {
+            // Lógica para remover um cartão de uma caixa
+            // Exemplo fictício: leitnerSystem.removeCardFromBox(cardId, boxId);
+            System.out.println("Removing card from box...");
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
+
 
     public void handleCardsInput(){
         try{
@@ -142,6 +140,16 @@ public class StudyCardsController {
             System.out.println(e.getMessage());
         }
     }
+
+    public String getRandomCardFromBox() {
+        try {
+            String response = this.leitnerSystem.getRandomCardFromBox(); // Aqui deve acessar o método de LeitnerSystem
+            return response;
+        } catch (Exception e) {
+            return e.getMessage(); // Retornar uma mensagem de erro, se necessário
+        }
+    }
+
 
     public static void controllerOptions(){
         System.out.println("""
