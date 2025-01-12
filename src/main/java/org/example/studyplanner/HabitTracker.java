@@ -28,22 +28,35 @@ public class HabitTracker {
     public String viewAllHabitRecords() {
         StringBuilder response = new StringBuilder();
         for (Habit habit : habits) {
-            response.append("[ Habit: ")
-                    .append(habit.getName())
-                    .append(". Records: ");
-            List<LocalDateTime> records = tracker.get(habit.getId());
-            for (LocalDateTime record : records) {
-                response.append(formatHabitDate(record)).append(", ");
-            }
-            if (!records.isEmpty()) {
-                // Remove a última vírgula e espaço adicionados
-                response.setLength(response.length() - 2);
-            }
-            response.append(" ]");
+            response.append(formatHabitWithRecords(habit));
         }
         return response.toString();
     }
 
+    private String formatHabitWithRecords(Habit habit) {
+        StringBuilder habitRecord = new StringBuilder();
+        habitRecord.append("[ Habit: ")
+                .append(habit.getName())
+                .append(". Records: ");
+
+        List<LocalDateTime> records = tracker.get(habit.getId());
+        habitRecord.append(formatHabitRecords(records));
+        habitRecord.append(" ]");
+
+        return habitRecord.toString();
+    }
+
+    private String formatHabitRecords(List<LocalDateTime> records) {
+        StringBuilder formattedRecords = new StringBuilder();
+        for (LocalDateTime record : records) {
+            formattedRecords.append(formatHabitDate(record)).append(", ");
+        }
+        if (!records.isEmpty()) {
+            // Remove a última vírgula e espaço adicionados
+            formattedRecords.setLength(formattedRecords.length() - 2);
+        }
+        return formattedRecords.toString();
+    }
 
     @Override
     public String toString() {
