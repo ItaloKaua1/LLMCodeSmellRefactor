@@ -11,8 +11,8 @@
   <component name="PDMPlugin">
     <option name="customRuleSets">
       <list>
-        <option value="$PROJECT_DIR$/rules.xml" />
         <option value="C:\Users\Ítalo Kauã\Desktop\Projetos solo\LLMCodeSmellRefactor\rules.xml" />
+        <option value="C:\Users\Ítalo Kauã\Desktop\Projetos solo\bilola\LLMCodeSmellRefactor\rules.xml" />
       </list>
     </option>
     <option name="options">
