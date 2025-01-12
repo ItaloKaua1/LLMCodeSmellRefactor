@@ -5,85 +5,80 @@ import org.example.studyplanner.HabitTracker;
 import org.example.studyplanner.TodoTracker;
 import org.example.studyregistry.StudyTaskManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SearchLog {
-    private List<String> searchHistory;
-    private Map<String, Integer> searchCount;
+    private final List<String> searchHistory;
+    private final Map<String, Integer> searchCount;
     private boolean isLocked;
-    private Integer numUsages;
-    private String logName;
+    private int numUsages;
+    private final String logName;
 
     public SearchLog(String logName) {
-        searchHistory = new ArrayList<>();
-        searchCount = new HashMap<>();
+        this.searchHistory = new ArrayList<>();
+        this.searchCount = new HashMap<>();
         this.logName = logName;
-        numUsages = 0;
-        isLocked = false;
+        this.numUsages = 0;
+        this.isLocked = false;
     }
 
-    // Método movido para a classe SearchLog
+    // Método para registrar uma busca
     public List<String> handleRegistrySearch(String text) {
+        if (isLocked) {
+            throw new IllegalStateException("SearchLog is locked and cannot process searches.");
+        }
+
         List<String> results = new ArrayList<>();
         results.addAll(CardManager.getCardManager().searchInCards(text));
         results.addAll(HabitTracker.getHabitTracker().searchInHabits(text));
         results.addAll(TodoTracker.getInstance().searchInTodos(text));
         results.addAll(StudyTaskManager.getStudyTaskManager().searchInRegistries(text));
 
-        this.addSearchHistory(text);
-        this.setNumUsages(this.getNumUsages() + 1); // Atualiza o número de usos
-
-        results.add("\nLogged in: " + this.getLogName());
+        logSearch(text);
+        results.add("\nLogged in: " + logName);
         return results;
     }
 
-    // Métodos existentes de SearchLog
-    public void addSearchHistory(String searchHistory) {
-        this.searchHistory.add(searchHistory);
+    // Método para adicionar e contabilizar buscas
+    private void logSearch(String searchText) {
+        searchHistory.add(searchText);
+        searchCount.put(searchText, searchCount.getOrDefault(searchText, 0) + 1);
+        numUsages++;
     }
 
+    // Método para recuperar histórico de buscas
     public List<String> getSearchHistory() {
-        return searchHistory;
+        return Collections.unmodifiableList(searchHistory);
     }
 
-    public void setSearchHistory(List<String> searchHistory) {
-        this.searchHistory = searchHistory;
+    // Método para obter a contagem de buscas por termo
+    public int getSearchCount(String searchText) {
+        return searchCount.getOrDefault(searchText, 0);
     }
 
-    public Map<String, Integer> getSearchCount() {
-        return searchCount;
-    }
-
-    public void setSearchCount(Map<String, Integer> searchCount) {
-        this.searchCount = searchCount;
-    }
-
+    // Métodos para status de bloqueio
     public boolean isLocked() {
         return isLocked;
     }
 
-    public void setLocked(boolean locked) {
-        isLocked = locked;
+    public void lock() {
+        isLocked = true;
     }
 
-    public Integer getNumUsages() {
+    public void unlock() {
+        isLocked = false;
+    }
+
+    // Método para obter o número total de buscas realizadas
+    public int getTotalUsages() {
         return numUsages;
     }
 
-    public void setNumUsages(Integer numUsages) {
-        this.numUsages = numUsages;
-    }
-
+    // Método para obter o nome do log
     public String getLogName() {
         return logName;
     }
-
-    public void setLogName(String logName) {
-        this.logName = logName;
-    }
 }
+
 
 
