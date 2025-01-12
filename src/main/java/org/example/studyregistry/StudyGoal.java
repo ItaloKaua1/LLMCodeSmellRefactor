@@ -26,32 +26,54 @@ public class StudyGoal extends Registry{
         this.isCompleted = completed;
     }
 
-    public String setGoalSummary(){
+    public String setGoalSummary() {
         StringBuilder summary = new StringBuilder();
-        summary.append("Goal Summary:\n").append("\n\n");
-        if(this.isActive){
-            summary.append("Active Goal:\n").append(goal).append("\n\n");
-        }
-        if(this.isCompleted){
-            summary.append("Completed Goal:\n").append(goal).append("\n\n");
-        }
-        if(this.goalRequirements != null){
-            summary.append("Requirements:\n");
-            for(String requirement : this.goalRequirements){
-                summary.append(requirement).append(", ");
-            }
-        }
-        if(this.studyPlan != null){
-            summary.append("Plan:\n");
-            summary.append(this.studyPlan.toString());
-        }
-        if(this.studyObjective != null){
-            summary.append("Objective:\n");
-            summary.append(this.studyObjective.toString());
-        }
+        summary.append("Goal Summary:\n\n");
+
+        appendActiveGoal(summary);
+        appendCompletedGoal(summary);
+        appendGoalRequirements(summary);
+        appendStudyPlan(summary);
+        appendStudyObjective(summary);
+
         this.summary = summary.toString();
         return summary.toString();
     }
+
+    private void appendActiveGoal(StringBuilder summary) {
+        if (this.isActive) {
+            summary.append("Active Goal:\n").append(goal).append("\n\n");
+        }
+    }
+
+    private void appendCompletedGoal(StringBuilder summary) {
+        if (this.isCompleted) {
+            summary.append("Completed Goal:\n").append(goal).append("\n\n");
+        }
+    }
+
+    private void appendGoalRequirements(StringBuilder summary) {
+        if (this.goalRequirements != null) {
+            summary.append("Requirements:\n");
+            for (String requirement : this.goalRequirements) {
+                summary.append(requirement).append(", ");
+            }
+            summary.append("\n"); // Remove a vírgula final e insira uma quebra de linha
+        }
+    }
+
+    private void appendStudyPlan(StringBuilder summary) {
+        if (this.studyPlan != null) {
+            summary.append("Plan:\n").append(this.studyPlan.toString()).append("\n");
+        }
+    }
+
+    private void appendStudyObjective(StringBuilder summary) {
+        if (this.studyObjective != null) {
+            summary.append("Objective:\n").append(this.studyObjective.toString()).append("\n");
+        }
+    }
+
 
     public void addRequirement(String requirement){
         this.goalRequirements.add(requirement);
