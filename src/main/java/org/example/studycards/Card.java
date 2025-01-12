@@ -5,28 +5,30 @@ public class Card {
     private String answer;
 
     public Card(String question, String answer) {
+        if (question == null || question.isBlank()) {
+            throw new IllegalArgumentException("Question cannot be null or blank");
+        }
+        if (answer == null || answer.isBlank()) {
+            throw new IllegalArgumentException("Answer cannot be null or blank");
+        }
         this.question = question;
         this.answer = answer;
     }
 
-    public String getQuestion() {
-        return question;
+    public String displayCard() {
+        return "Q: " + question + "\nA: " + answer;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public boolean isCorrectAnswer(String providedAnswer) {
+        return answer.equalsIgnoreCase(providedAnswer.trim());
     }
 
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public void edit(String question, String answer) {
-        setQuestion(question);
-        setAnswer(answer);
+    public void update(String newQuestion, String newAnswer) {
+        if (newQuestion != null && !newQuestion.isBlank()) {
+            this.question = newQuestion;
+        }
+        if (newAnswer != null && !newAnswer.isBlank()) {
+            this.answer = newAnswer;
+        }
     }
 }
