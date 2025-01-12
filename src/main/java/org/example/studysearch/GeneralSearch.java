@@ -23,16 +23,8 @@ public class GeneralSearch implements Search<String> {
         return searchLog;
     }
 
-    private List<String> handleSearch(String text){
-        List<String> results = new ArrayList<>();
-        results.addAll(CardManager.getCardManager().searchInCards(text));
-        results.addAll(HabitTracker.getHabitTracker().searchInHabits(text));
-        results.addAll(TodoTracker.getInstance().searchInTodos(text));
-        results.addAll(StudyMaterial.getStudyMaterial().searchInMaterials(text));
-        results.addAll(StudyTaskManager.getStudyTaskManager().searchInRegistries(text));
-        this.searchLog.addSearchHistory(text);
-        this.searchLog.setNumUsages(this.searchLog.getNumUsages() + 1);
-        results.add("\nLogged in: " + this.searchLog.getLogName());
+    public List<String> handleSearch(String text) {
+        List<String> results = searchLog.handleRegistrySearch(text);
         return results;
     }
 
