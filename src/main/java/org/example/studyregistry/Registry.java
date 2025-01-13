@@ -21,4 +21,8 @@ public abstract class Registry {
     public boolean isActive() {
         return isActive;
     }
+
+
+
 }
+

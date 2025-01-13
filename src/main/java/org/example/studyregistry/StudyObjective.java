@@ -3,6 +3,7 @@ package org.example.studyregistry;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 public class StudyObjective extends Registry{
     private String title;
     private String description;
@@ -82,17 +83,24 @@ public class StudyObjective extends Registry{
         this.startDate= LocalDateTime.of(year, month, day, 0, 0);
     }
 
-    public void handleSetObjective(Integer id, Integer priority, Integer practicedDays, int day, int month, int year, String name, String title, String description, String topic, String objectiveInOneLine, String objectiveFullDescription, String motivation, Double duration, boolean isActive){
-        handleSetRegistry(id, name, priority, isActive);
-        handleSetTextualInfo(title, description, topic, objectiveInOneLine, objectiveFullDescription, motivation);
-        handleSetTime(practicedDays, day, month, year, duration);
+    public void handleSetObjective(ObjectiveHandler.RegistryInfo registryInfo, ObjectiveHandler.TextualInfo textualInfo, ObjectiveHandler.TimeInfo timeInfo) {
+        handleSetRegistry(registryInfo.getId(), textualInfo.getName(), registryInfo.getPriority(), registryInfo.isActive());
+        handleSetTextualInfo(textualInfo.getTitle(), textualInfo.getDescription(), textualInfo.getTopic(),
+                textualInfo.getObjectiveInOneLine(), textualInfo.getObjectiveFullDescription(), textualInfo.getMotivation());
+        handleSetTime(timeInfo.getPracticedDays(), timeInfo.getDay(), timeInfo.getMonth(), timeInfo.getYear(), timeInfo.getDuration());
     }
 
-    public int handleSetObjectiveAdapter(List<Integer> intProperties, List<String> stringProperties, Double duration, boolean isActive){
-        handleSetObjective(intProperties.get(0), intProperties.get(1), intProperties.get(2), intProperties.get(3), intProperties.get(4), intProperties.get(5),
-                stringProperties.get(0), stringProperties.get(1), stringProperties.get(2), stringProperties.get(3), stringProperties.get(4), stringProperties.get(5), stringProperties.get(6), duration, isActive);
+    public int handleSetObjectiveAdapter(List<Integer> intProperties, List<String> stringProperties, Double duration, boolean isActive) {
+        // Usando diretamente as classes internas estáticas
+        ObjectiveHandler.RegistryInfo registryInfo = new ObjectiveHandler.RegistryInfo(intProperties.get(0), intProperties.get(1), isActive);
+        ObjectiveHandler.TextualInfo textualInfo = new ObjectiveHandler.TextualInfo(stringProperties.get(0), stringProperties.get(1), stringProperties.get(2),
+                stringProperties.get(3), stringProperties.get(4), stringProperties.get(5), stringProperties.get(6));
+        ObjectiveHandler.TimeInfo timeInfo = new ObjectiveHandler.TimeInfo(intProperties.get(2), intProperties.get(3), intProperties.get(4), intProperties.get(5), duration);
+
+        handleSetObjective(registryInfo, textualInfo, timeInfo);
         return intProperties.get(0);
     }
+
 
     public String getDescription() {
         return description;

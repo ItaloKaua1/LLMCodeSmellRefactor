@@ -1,9 +1,9 @@
 package org.example.studyregistry;
 import org.example.studymaterial.AudioReference;
-import org.example.studymaterial.Reference;
 import org.example.studymaterial.TextReference;
 import org.example.studymaterial.VideoReference;
 
+import javax.naming.Reference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

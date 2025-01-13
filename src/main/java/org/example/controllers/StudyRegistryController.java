@@ -6,6 +6,7 @@ import org.example.studymaterial.TextReference;
 import org.example.studymaterial.VideoReference;
 import org.example.studyregistry.*;
 
+import javax.naming.Reference;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,15 +52,65 @@ public class StudyRegistryController {
         studyTaskManager.addRegistry(task);
     }
 
-    private void handleSetObjective(StudyObjective objective){
+    private void handleSetObjective(StudyObjective objective) {
         handleMethodHeader("(Study Objective Edit)");
+        printInstructionMessage();
+
+        // Coletando os dados do usuário
+        Integer id = getIntegerInput();
+        Integer priority = getIntegerInput();
+        Integer practicedDays = getIntegerInput();
+        int day = getIntegerInput();
+        int month = getIntegerInput();
+        int year = getIntegerInput();
+        String name = getInput();
+        String title = getInput();
+        String description = getInput();
+        String topic = getInput();
+        String objectiveInOneLine = getInput();
+        String objectiveFullDescription = getInput();
+        String motivation = getInput();
+        Double duration = getDoubleInput();
+        boolean isActive = getBooleanInput();
+
+        // Criando as instâncias das classes auxiliares
+        ObjectiveHandler.RegistryInfo registryInfo = createRegistryInfo(id, priority, isActive);
+        ObjectiveHandler.TextualInfo textualInfo = createTextualInfo(name, title, description, topic, objectiveInOneLine, objectiveFullDescription, motivation);
+        ObjectiveHandler.TimeInfo timeInfo = createTimeInfo(practicedDays, day, month, year, duration);
+
+        // Passando as instâncias para o método handleSetObjective do objeto
+        objective.handleSetObjective(registryInfo, textualInfo, timeInfo);
+    }
+
+    private void printInstructionMessage() {
         System.out.println("Type the following info: Integer id, Integer priority " +
                 "Integer practicedDays, int day, int month, int year, String name, String title, String description, " +
                 "String topic, String objectiveInOneLine, String objectiveFullDescription, String motivation, " +
                 "Double duration, boolean isActive  \n");
-        objective.handleSetObjective(Integer.parseInt(getInput()), Integer.parseInt(getInput()),Integer.parseInt(getInput()),Integer.parseInt(getInput()),Integer.parseInt(getInput()),
-                Integer.parseInt(getInput()), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(),
-                Double.parseDouble(getInput()), Boolean.parseBoolean(getInput()));
+    }
+
+    private Integer getIntegerInput() {
+        return Integer.parseInt(getInput());
+    }
+
+    private Double getDoubleInput() {
+        return Double.parseDouble(getInput());
+    }
+
+    private boolean getBooleanInput() {
+        return Boolean.parseBoolean(getInput());
+    }
+
+    private ObjectiveHandler.RegistryInfo createRegistryInfo(Integer id, Integer priority, boolean isActive) {
+        return new ObjectiveHandler.RegistryInfo(id, priority, isActive);
+    }
+
+    private ObjectiveHandler.TextualInfo createTextualInfo(String name, String title, String description, String topic, String objectiveInOneLine, String objectiveFullDescription, String motivation) {
+        return new ObjectiveHandler.TextualInfo(name, title, description, topic, objectiveInOneLine, objectiveFullDescription, motivation);
+    }
+
+    private ObjectiveHandler.TimeInfo createTimeInfo(Integer practicedDays, int day, int month, int year, Double duration) {
+        return new ObjectiveHandler.TimeInfo(practicedDays, day, month, year, duration);
     }
 
     private StudyObjective getStudyObjectiveInfo(){
