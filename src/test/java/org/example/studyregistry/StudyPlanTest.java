@@ -21,16 +21,24 @@ class StudyPlanTest {
         assignSteps();
     }
 
-    void assignSteps(){
-        List<String> stringProperties = List.of("firstStep", "resetStudyMechanism", "consistentStep", "seasonalSteps",
-                "basicSteps", "mainObjectiveTitle", "mainGoalTitle", "mainMaterialTopic", "mainTask");
+    void assignSteps() {
+        List<String> stringProperties = List.of(
+                "firstStep", "resetStudyMechanism", "consistentStep", "seasonalSteps",
+                "basicSteps", "mainObjectiveTitle", "mainGoalTitle", "mainMaterialTopic", "mainTask"
+        );
         Integer numberOfSteps = 20;
         boolean isImportant = true;
         startDateTest = LocalDateTime.now();
         LocalDateTime startDate = startDateTest;
         LocalDateTime endDate = startDate.plusDays(10);
-        studyPlan.handleAssignSteps(stringProperties, numberOfSteps, isImportant, startDate, endDate);
+
+        // Criação do objeto StepDetails
+        StepDetails stepDetails = new StepDetails(stringProperties, numberOfSteps, isImportant, startDate, endDate);
+
+        // Passa o objeto diretamente ao método
+        studyPlan.handleAssignSteps(stepDetails);
     }
+
 
     boolean verifyStepsResponse(String step, List<String> response) {
         for(String object : response){

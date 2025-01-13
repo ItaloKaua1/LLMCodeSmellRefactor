@@ -52,17 +52,14 @@ public class StudyRegistryController {
         studyTaskManager.addRegistry(task);
     }
 
-    private void handleSetObjective(StudyObjective objective) {
-        handleMethodHeader("(Study Objective Edit)");
-        printInstructionMessage();
-
-        // Coletando os dados do usuário
+    private ObjectiveHandler.RegistryInfo collectRegistryInfo() {
         Integer id = getIntegerInput();
         Integer priority = getIntegerInput();
-        Integer practicedDays = getIntegerInput();
-        int day = getIntegerInput();
-        int month = getIntegerInput();
-        int year = getIntegerInput();
+        boolean isActive = getBooleanInput();
+        return createRegistryInfo(id, priority, isActive);
+    }
+
+    private ObjectiveHandler.TextualInfo collectTextualInfo() {
         String name = getInput();
         String title = getInput();
         String description = getInput();
@@ -70,17 +67,29 @@ public class StudyRegistryController {
         String objectiveInOneLine = getInput();
         String objectiveFullDescription = getInput();
         String motivation = getInput();
+        return createTextualInfo(name, title, description, topic, objectiveInOneLine, objectiveFullDescription, motivation);
+    }
+
+    private ObjectiveHandler.TimeInfo collectTimeInfo() {
+        Integer practicedDays = getIntegerInput();
+        int day = getIntegerInput();
+        int month = getIntegerInput();
+        int year = getIntegerInput();
         Double duration = getDoubleInput();
-        boolean isActive = getBooleanInput();
+        return createTimeInfo(practicedDays, day, month, year, duration);
+    }
 
-        // Criando as instâncias das classes auxiliares
-        ObjectiveHandler.RegistryInfo registryInfo = createRegistryInfo(id, priority, isActive);
-        ObjectiveHandler.TextualInfo textualInfo = createTextualInfo(name, title, description, topic, objectiveInOneLine, objectiveFullDescription, motivation);
-        ObjectiveHandler.TimeInfo timeInfo = createTimeInfo(practicedDays, day, month, year, duration);
+    private void handleSetObjective(StudyObjective objective) {
+        handleMethodHeader("(Study Objective Edit)");
+        printInstructionMessage();
 
-        // Passando as instâncias para o método handleSetObjective do objeto
+        ObjectiveHandler.RegistryInfo registryInfo = collectRegistryInfo();
+        ObjectiveHandler.TextualInfo textualInfo = collectTextualInfo();
+        ObjectiveHandler.TimeInfo timeInfo = collectTimeInfo();
+
         objective.handleSetObjective(registryInfo, textualInfo, timeInfo);
     }
+
 
     private void printInstructionMessage() {
         System.out.println("Type the following info: Integer id, Integer priority " +
@@ -134,16 +143,39 @@ public class StudyRegistryController {
         return plan;
     }
 
-    private void handleSetSteps(StudyPlan studyPlan){
+    private void handleSetSteps(StudyPlan studyPlan) {
         handleMethodHeader("(Study Plan Edit)");
-        System.out.println("Type the following info: String firstStep, String resetStudyMechanism, String consistentStep, " +
-                "String seasonalSteps, String basicSteps, String mainObjectiveTitle, String mainGoalTitle, String mainMaterialTopic, " +
-                "String mainTask, @NotNull  Integer numberOfSteps, boolean isImportant. " +
-                "The Date to start is today, the date to end is x days from now, type the quantity of days\n");
-        LocalDateTime createdAT = LocalDateTime.now();
-        studyPlan.assignSteps(getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(), getInput(),
-                Integer.parseInt(getInput()), Boolean.parseBoolean(getInput()), createdAT, createdAT.plusDays(Long.parseLong(getInput())));
+        System.out.println("Type the following info: \n" +
+                "- String firstStep\n" +
+                "- String resetStudyMechanism\n" +
+                "- String consistentStep\n" +
+                "- String seasonalSteps\n" +
+                "- String basicSteps\n" +
+                "- String mainObjectiveTitle\n" +
+                "- String mainGoalTitle\n" +
+                "- String mainMaterialTopic\n" +
+                "- String mainTask\n" +
+                "- Integer numberOfSteps\n" +
+                "- boolean isImportant\n" +
+                "- Quantity of days from today for the end date\n");
+
+        // Coleta os dados de entrada
+        List<String> stringProperties = new ArrayList<>();
+        for (int i = 0; i < 9; i++) { // 9 Strings de entrada
+            stringProperties.add(getInput());
+        }
+        Integer numberOfSteps = Integer.parseInt(getInput());
+        boolean isImportant = Boolean.parseBoolean(getInput());
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endDate = startDate.plusDays(Long.parseLong(getInput()));
+
+        // Cria o objeto StepDetails
+        StepDetails stepDetails = new StepDetails(stringProperties, numberOfSteps, isImportant, startDate, endDate);
+
+        // Passa o objeto para o método assignSteps
+        studyPlan.assignSteps(stepDetails);
     }
+
 
     private StudyGoal getStudyGoalInfo(){
         handleMethodHeader("(Study Goal Creation)");
