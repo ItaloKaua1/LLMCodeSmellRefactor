@@ -26,18 +26,67 @@ public class StudyTaskManager {
         return weekResponsibilities;
     }
 
-    public void setUpWeek(String planName, String objectiveTitle, String objectiveDescription, String materialTopic,
-                          String materialFormat, String goal, String reminderTitle, String reminderDescription,
-                          String mainTaskTitle, String mainHabit, String mainCardStudy){
+    public void setUpWeek(WeekSetup weekSetup) {
         this.weekResponsibilities = new ArrayList<>();
-        this.weekResponsibilities.addAll(Arrays.asList(planName, objectiveTitle, objectiveDescription, materialTopic, materialFormat, goal, reminderTitle, reminderDescription, mainTaskTitle, mainHabit, mainCardStudy));
+        this.weekResponsibilities.addAll(Arrays.asList(
+                weekSetup.getPlanName(),
+                weekSetup.getObjectiveTitle(),
+                weekSetup.getObjectiveDescription(),
+                weekSetup.getMaterialTopic(),
+                weekSetup.getMaterialFormat(),
+                weekSetup.getGoal(),
+                weekSetup.getReminderTitle(),
+                weekSetup.getReminderDescription(),
+                weekSetup.getMainTaskTitle(),
+                weekSetup.getMainHabit(),
+                weekSetup.getMainCardStudy()
+        ));
     }
 
-    public void handleSetUpWeek(List<String> stringProperties){
-        setUpWeek(stringProperties.get(0), stringProperties.get(1), stringProperties.get(2), stringProperties.get(3),
-                stringProperties.get(4), stringProperties.get(5), stringProperties.get(6), stringProperties.get(7),
-                stringProperties.get(8), stringProperties.get(9), stringProperties.get(10));
+
+    public void handleSetUpWeek(List<String> stringProperties) {
+        if (stringProperties == null || stringProperties.size() < 11) {
+            throw new IllegalArgumentException("Insufficient properties to set up the week.");
+        }
+
+        // Criar os objetos de valor a partir das strings fornecidas
+        Objective objective = new Objective(
+                stringProperties.get(1),  // objectiveTitle
+                stringProperties.get(2)   // objectiveDescription
+        );
+
+        Material material = new Material(
+                stringProperties.get(3),  // materialTopic
+                stringProperties.get(4)   // materialFormat
+        );
+
+        Reminder reminder = new Reminder(
+                stringProperties.get(6),  // reminderTitle
+                stringProperties.get(7)   // reminderDescription
+        );
+
+        Task task = new Task(
+                stringProperties.get(8)   // mainTaskTitle
+        );
+
+        Habit habit = new Habit(
+                stringProperties.get(9)   // mainHabit
+        );
+
+        // Construir o WeekSetup usando o Builder
+        WeekSetup weekSetup = new WeekSetup.Builder()
+                .setPlanName(stringProperties.get(0))  // planName
+                .setGoal(stringProperties.get(5))      // goal
+                .setObjective(objective)
+                .setMaterial(material)
+                .setReminder(reminder)
+                .setTask(task)
+                .setHabit(habit)
+                .build();
+
+        setUpWeek(weekSetup);
     }
+
 
 
     public void addRegistry(Registry registry){
