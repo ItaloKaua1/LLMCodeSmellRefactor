@@ -87,20 +87,65 @@ public class HabitTracker {
         return this.tracker.keySet().stream().toList();
     }
 
-    public int addHabit(String name, String motivation, Integer dailyMinutesDedication, Integer dailyHoursDedication, Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer seconds, Boolean isConcluded) {
-        LocalTime lt = LocalTime.of(dailyHoursDedication, dailyMinutesDedication);
-        LocalDateTime startDate = LocalDateTime.of(year, month, day, hour, minute, seconds);
-        Habit habit = new Habit(name, motivation, lt, this.nextId, startDate, isConcluded);
+    public int addHabit(HabitDetails habitDetails) {
+        // Criação de uma instância de Habit diretamente a partir do HabitDetails
+        Habit habit = new Habit(
+                habitDetails.getName(),          // Nome do hábito
+                habitDetails.getMotivation(),    // Motivação
+                habitDetails.getDailyDedication(), // Dedicação diária
+                this.nextId,                     // ID único
+                habitDetails.getStartDate(),     // Data de início
+                habitDetails.isConcluded()       // Estado de conclusão
+        );
+
+        // Adiciona o hábito à lista de hábitos
         this.habits.add(habit);
-        int response = nextId;
+
+        // Configuração de acompanhamento
         this.tracker.put(nextId, new ArrayList<>());
+
+        // Incrementa o ID para o próximo hábito
+        int generatedId = nextId;
         this.nextId++;
-        return response;
+
+        // Retorna o ID gerado
+        return generatedId;
     }
 
-    public int handleAddHabitAdapter(List<String> stringProperties, List<Integer> intProperties, boolean isConcluded){
-        return addHabit(stringProperties.get(0), stringProperties.get(1), intProperties.get(0), intProperties.get(1), intProperties.get(2), intProperties.get(3), intProperties.get(4), intProperties.get(5), intProperties.get(6), intProperties.get(7), isConcluded);
+
+    public int handleAddHabitAdapter(List<String> stringProperties, List<Integer> intProperties) {
+        if (stringProperties == null || stringProperties.size() < 2) {
+            throw new IllegalArgumentException("stringProperties must contain at least name and motivation.");
+        }
+        if (intProperties == null || intProperties.size() < 8) {
+            throw new IllegalArgumentException("intProperties must contain at least 8 elements for time and date.");
+        }
+
+        // Cria a dedicação diária usando as propriedades inteiras
+        LocalTime dailyDedication = LocalTime.of(intProperties.get(1), intProperties.get(0));
+
+        // Cria a data de início usando as propriedades inteiras
+        LocalDateTime startDate = LocalDateTime.of(
+                intProperties.get(2), // Ano
+                intProperties.get(3), // Mês
+                intProperties.get(4), // Dia
+                intProperties.get(5), // Hora
+                intProperties.get(6), // Minuto
+                intProperties.get(7)  // Segundo
+        );
+
+        // Cria uma nova instância de HabitDetails com validações já no construtor
+        HabitDetails habitDetails = new HabitDetails(
+                stringProperties.get(0), // Nome
+                stringProperties.get(1), // Motivação
+                dailyDedication,
+                startDate
+        );
+
+        // Adiciona o hábito e retorna o ID gerado
+        return addHabit(habitDetails);
     }
+
 
 
     public int addHabit(String name, String motivation) {
